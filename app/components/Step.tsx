@@ -20,7 +20,7 @@ export default function Step({
 }: StepProps) {
   return (
     <div
-      className={cn('flex lg:flex-col items-center gap-8 w-full lg:gap-2', {
+      className={cn('flex lg:flex-col items-center gap-8 w-full lg:gap-8', {
         'flex-row-reverse': reverse,
       })}
     >
