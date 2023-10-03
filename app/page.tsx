@@ -61,7 +61,7 @@ export default function Home() {
               <Step
                 headline='Identify'
                 image={chatBot}
-                description='Our algorithm will identify prospects given your search parameters'
+                description='Our algorithm will identify prospects and organizational insights'
                 reverse={true}
                 className='w-3/4'
               />
