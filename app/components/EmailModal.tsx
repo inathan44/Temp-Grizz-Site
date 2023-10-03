@@ -1,5 +1,6 @@
 'use client';
 import React, { useState } from 'react';
+import emailjs from '@emailjs/browser';
 
 // Shadcn ui imports
 import { useToast } from '@/components/ui/use-toast';
@@ -20,13 +21,13 @@ import {
 // zod + react hook form
 import { LeadGenSchema, leadGen } from '../models/schemas';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { SubmitHandler, useFieldArray, useForm } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 
 export default function EmailModal() {
   const {
     register,
     handleSubmit,
-    formState: { errors, isValid },
+    formState: { errors },
     reset,
   } = useForm<LeadGenSchema>({
     mode: 'onTouched',
@@ -35,35 +36,37 @@ export default function EmailModal() {
 
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [loading, setLoading] = useState<boolean>(false);
+  const [emailError, setEmailError] = useState<boolean>(false);
 
   const { toast } = useToast();
 
-  function delay(ms: number) {
-    return new Promise((resolve) => setTimeout(resolve, ms));
-  }
-
-  async function delayedFunction() {
-    await delay(2000); // Wait for 2 seconds
-  }
-
   const onSubmit = async (
     data: {
+      message: string;
       name: string;
       email: string;
       phoneNumber: number;
     },
     onClose: () => void
   ) => {
-    console.log('data:', data);
     setLoading(true);
     try {
-      await delayedFunction();
+      setEmailError(false);
+
+      await emailjs.send(
+        process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID!,
+        process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID!,
+        data,
+        process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY!
+      );
+
       toast({ description: 'message sent.', duration: 3000 });
 
       reset();
       onClose();
     } catch (error) {
       console.error(error);
+      setEmailError(true);
     } finally {
       setLoading(false);
     }
@@ -77,7 +80,7 @@ export default function EmailModal() {
         radius='full'
         className='bg-grizz-red font-semibold px-10 lg:text-lg lg:font-normal'
       >
-        Join Email List
+        Connect with the Grizz Team
       </Button>
       <Modal
         isOpen={isOpen}
@@ -91,6 +94,11 @@ export default function EmailModal() {
               <ModalHeader className='flex flex-col gap-1 font-normal text-sm text-center'>
                 Learn more about what Grizz can offer your business
               </ModalHeader>
+              {emailError && (
+                <p className='text-center text-grizz-red'>
+                  Error sending email, please try again later
+                </p>
+              )}
               <form onSubmit={handleSubmit((data) => onSubmit(data, onClose))}>
                 <ModalBody>
                   <Input
@@ -101,6 +109,7 @@ export default function EmailModal() {
                     {...register('name')}
                     isInvalid={!!errors.name}
                     errorMessage={errors.name?.message}
+                    name='name'
                   />
                   <Input
                     label='Email'
@@ -109,6 +118,7 @@ export default function EmailModal() {
                     {...register('email')}
                     isInvalid={!!errors.email}
                     errorMessage={errors.email?.message}
+                    name='email'
                   />
                   <Input
                     label='Phone number'
@@ -117,6 +127,7 @@ export default function EmailModal() {
                     {...register('phoneNumber')}
                     isInvalid={!!errors.phoneNumber}
                     errorMessage={errors.phoneNumber?.message}
+                    name='phoneNumber'
                   />
                   <Textarea
                     label='Message'
@@ -124,6 +135,7 @@ export default function EmailModal() {
                     placeholder='Enter your message'
                     variant='bordered'
                     {...register('message')}
+                    name='message'
                   />
                 </ModalBody>
                 <ModalFooter>
@@ -134,7 +146,7 @@ export default function EmailModal() {
                     isLoading={loading}
                     type='submit'
                   >
-                    Join email list
+                    Submit
                   </Button>
                 </ModalFooter>
               </form>
