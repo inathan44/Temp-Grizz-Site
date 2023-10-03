@@ -1,8 +1,16 @@
 import './globals.css';
 import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
+import { Poppins } from 'next/font/google';
+import { Providers } from './providers';
+import { Toaster } from '@/components/ui/toaster';
+import Navbar from './components/Navbar';
+import { twMerge } from 'tailwind-merge';
+import Blob from './components/Blob';
 
-const inter = Inter({ subsets: ['latin'] });
+const poppins = Poppins({
+  subsets: ['latin'],
+  weight: ['300', '400', '500', '600', '700'],
+});
 
 export const metadata: Metadata = {
   title: 'Grizz',
@@ -15,8 +23,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang='en'>
-      <body className={inter.className}>{children}</body>
+    <html lang='en bg-offWhite'>
+      <body className={(twMerge(poppins.className), 'overflow-x-hidden')}>
+        <Providers>
+          <>
+            <Navbar />
+            {children} <Toaster />
+          </>
+        </Providers>
+      </body>
     </html>
   );
 }
