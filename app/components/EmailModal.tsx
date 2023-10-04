@@ -104,7 +104,7 @@ export default function EmailModal() {
                   <Input
                     autoFocus
                     label='Name'
-                    placeholder='enter your name'
+                    placeholder='Enter your name'
                     variant='bordered'
                     {...register('name')}
                     isInvalid={!!errors.name}
