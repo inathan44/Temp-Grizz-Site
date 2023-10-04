@@ -25,7 +25,7 @@ export default function Home() {
             </h1>
             <p className='text-sm text-slate-600 mt-3 mb-6 md:text-base md:leading-4 lg:text-lg lg:leading-5 lg:text-left'>
               Grizz is a lead generation platform designed to assist sales
-              individuals in finding new prospects with confirmed technology.
+              professionals in finding new prospects with confirmed technology.
             </p>
             <div className='lg:flex'>
               <EmailModal />
